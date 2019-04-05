@@ -24,9 +24,10 @@ namespace JsonPlaceHolderDependencyInjection.Function
         }
 
         [FunctionName("GetAlbums")]
-        public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "get", Route = "GetAlbums/{id?}")] HttpRequest req, int? id)
+        public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "get", Route = "GetAlbums/{id?}")] HttpRequest req, int? id/*, Microsoft.Extensions.Logging.ILogger log*/)
         {
             _logger.Information("C# HTTP trigger function processed a request.");
+            //log.LogInformation("C# HTTP trigger function processed a request.");
 
             if (id == null)
             {
