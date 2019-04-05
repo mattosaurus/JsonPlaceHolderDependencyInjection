@@ -1,3 +1,13 @@
 {
-    "version": "2.0"
+  "version": "2.0",
+  "logging": {
+    "logLevel": {
+      // For specific function
+      "Function.GetAlbums": "Information",
+      // For all functions
+      "Function": "Error",
+      // Default settings, e.g. for host 
+      "default": "None"
+    }
+  }
 }

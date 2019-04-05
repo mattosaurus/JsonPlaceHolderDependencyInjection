@@ -2,35 +2,41 @@
 using JsonPlaceHolderDependencyInjection.Function.Services;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace JsonPlaceHolderDependencyInjection
 {
     public class Startup : IWebJobsStartup
     {
-        public static IConfigurationRoot _configuration;
-
-        public void Configure(IWebJobsBuilder builder)
+        public Startup()
         {
             // Initialize serilog logger
             Log.Logger = new LoggerConfiguration()
-                 .WriteTo.Console(Serilog.Events.LogEventLevel.Debug)
-                 .MinimumLevel.Debug()
-                 .Enrich.FromLogContext()
-                 .CreateLogger();
+                     .WriteTo.Console(Serilog.Events.LogEventLevel.Debug)
+                     .MinimumLevel.Debug()
+                     .Enrich.FromLogContext()
+                     .CreateLogger();
+        }
 
-            builder.Services
-                .AddSingleton<ILogger>(Log.Logger)
+        public void Configure(IWebJobsBuilder builder)
+        {
+            ConfigureServices(builder.Services).BuildServiceProvider(true);
+        }
+
+        private IServiceCollection ConfigureServices(IServiceCollection services)
+        {
+            services
+                .AddLogging(loggingBuilder =>
+                    loggingBuilder.AddSerilog(dispose: true)
+                )
                 .AddTransient<IJsonPlaceholderClient, JsonPlaceholderClient>(client =>
                     new JsonPlaceholderClient(Environment.GetEnvironmentVariable("BaseAddress"))
                 )
-                .AddTransient<IJsonPlaceholderService, JsonPlaceholderService>()
-                .BuildServiceProvider(true);
+                .AddTransient<IJsonPlaceholderService, JsonPlaceholderService>();
+
+            return services;
         }
     }
 }

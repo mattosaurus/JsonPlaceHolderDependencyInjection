@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Azure.WebJobs.Hosting;
 using JsonPlaceHolderDependencyInjection;
 using JsonPlaceHolderDependencyInjection.Function.Services;
-using Serilog;
+using Microsoft.Extensions.Logging;
 
 [assembly: WebJobsStartup(typeof(Startup))]
 
@@ -17,16 +17,16 @@ namespace JsonPlaceHolderDependencyInjection.Function
         private readonly IJsonPlaceholderService _jsonPlaceholderService;
         private readonly ILogger _logger;
 
-        public GetAlbums(IJsonPlaceholderService jsonPlaceholderService, ILogger logger)
+        public GetAlbums(IJsonPlaceholderService jsonPlaceholderService, ILoggerFactory loggerFactory)
         {
             _jsonPlaceholderService = jsonPlaceholderService;
-            _logger = logger;
+            _logger = loggerFactory.CreateLogger("GetAlbums");
         }
 
         [FunctionName("GetAlbums")]
-        public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "get", Route = "GetAlbums/{id?}")] HttpRequest req, int? id/*, Microsoft.Extensions.Logging.ILogger log*/)
+        public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "get", Route = "GetAlbums/{id?}")] HttpRequest req, int? id)
         {
-            _logger.Information("C# HTTP trigger function processed a request.");
+            _logger.LogInformation("C# HTTP trigger function processed a request.");
             //log.LogInformation("C# HTTP trigger function processed a request.");
 
             if (id == null)

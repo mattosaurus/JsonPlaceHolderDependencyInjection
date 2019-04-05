@@ -7,7 +7,6 @@ using Microsoft.Azure.WebJobs.Hosting;
 using JsonPlaceHolderDependencyInjection;
 using JsonPlaceHolderDependencyInjection.Function.Services;
 using Microsoft.Extensions.Logging;
-//using Serilog;
 
 [assembly: WebJobsStartup(typeof(Startup))]
 
@@ -16,20 +15,18 @@ namespace JsonPlaceHolderDependencyInjection.Function
     public class GetPhotos
     {
         private readonly IJsonPlaceholderService _jsonPlaceholderService;
-        private readonly Serilog.ILogger _logger;
+        private readonly ILogger _logger;
 
-        public GetPhotos(IJsonPlaceholderService jsonPlaceholderService, Serilog.ILogger logger)
+        public GetPhotos(IJsonPlaceholderService jsonPlaceholderService, ILoggerFactory loggerFactory)
         {
             _jsonPlaceholderService = jsonPlaceholderService;
-            _logger = logger;
+            _logger = loggerFactory.CreateLogger("GetPhotos");
         }
 
         [FunctionName("GetPhotos")]
-        public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "get", Route = "GetPhotos/{id?}")] HttpRequest req, int? id/*, Microsoft.Extensions.Logging.ILogger log*/)
+        public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "get", Route = "GetPhotos/{id?}")] HttpRequest req, int? id)
         {
-            _logger.Information("C# HTTP trigger function processed a request.");
-            //log.LogInformation("C# HTTP trigger function processed a request.");
-
+            _logger.LogInformation("C# HTTP trigger function processed a request.");
             if (id == null)
             {
                 return (ActionResult)new OkObjectResult(await _jsonPlaceholderService.GetPhotos());
