@@ -163,34 +163,18 @@ namespace JsonPlaceHolderDependencyInjection.Tests.Models
             return photos;
         }
 
-        public static List<Photo> GetTestPhotos(int id)
+        public static Photo GetTestPhotos(int id)
         {
-            var photos = new List<Photo>();
-            photos = new List<Photo>()
+            var photo = new Photo()
             {
-                {
-                    new Photo()
-                    {
-                        AlbumId = id,
-                        Id = 1,
-                        Title = "Test Photo 1",
-                        Url = new Uri("https://photo-1.com"),
-                        ThumbnailUrl = new Uri("https://thumbnail-1.com")
-                    }
-                },
-                {
-                    new Photo()
-                    {
-                        AlbumId = id,
-                        Id = 2,
-                        Title = "Test Photo 2",
-                        Url = new Uri("https://photo-2.com"),
-                        ThumbnailUrl = new Uri("https://thumbnail-2.com")
-                    }
-                }
+                AlbumId = 1,
+                Id = id,
+                Title = "Test Photo " + id.ToString(),
+                Url = new Uri("https://photo-" + id.ToString() + ".com"),
+                ThumbnailUrl = new Uri("https://thumbnail-" + id.ToString() + ".com")
             };
 
-            return photos;
+            return photo;
         }
 
         private static Dictionary<string, StringValues> CreateDictionary(string key, string value)

@@ -36,22 +36,20 @@ namespace JsonPlaceHolderDependencyInjection.Tests
         }
 
         [Fact]
-        public async Task Photo_ReturnsAOkObjectResult_WithAListOf1Album()
+        public async Task Photo_ReturnsAOkObjectResult_WithAPhoto()
         {
             // Arrange
             var request = TestFactory.CreateHttpRequest();
             var mockService = new Mock<IJsonPlaceholderService>();
-            mockService.Setup(serv => serv.GetAlbumById(1)).Returns(Task.FromResult(TestFactory.GetTestAlbums(1)));
-            mockService.Setup(serv => serv.GetPhotosByAlbumId(1)).Returns(Task.FromResult(TestFactory.GetTestPhotos(1)));
+            mockService.Setup(serv => serv.GetPhotoById(1)).Returns(Task.FromResult(TestFactory.GetTestPhotos(1)));
             var getPhotos = new GetPhotos(mockService.Object, new NullLoggerFactory());
 
             // Act
-            var response = await getPhotos.Run(request, null);
+            var response = await getPhotos.Run(request, 1);
 
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(response);
-            var model = Assert.IsAssignableFrom<List<Album>>(okResult.Value);
-            Assert.Single(model);
+            var model = Assert.IsAssignableFrom<Photo>(okResult.Value);
         }
     }
 }
